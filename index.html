@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLAXY - Calculateur de Moyenne de Semestre</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #53045b 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* En-tête avec logo CLAXY */
+        .site-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+        }
+
+        .site-logo {
+            font-size: 48px;
+            font-weight: 900;
+            letter-spacing: 10px;
+            color: white;
+            text-shadow: 
+                0 0 10px rgba(255, 255, 255, 0.5),
+                0 0 20px rgba(255, 255, 255, 0.3),
+                0 4px 8px rgba(0, 0, 0, 0.3);
+            margin-bottom: 10px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 
+                    0 0 10px rgba(255, 255, 255, 0.5),
+                    0 0 20px rgba(255, 255, 255, 0.3),
+                    0 4px 8px rgba(0, 0, 0, 0.3);
+            }
+            to {
+                text-shadow: 
+                    0 0 20px rgba(255, 255, 255, 0.8),
+                    0 0 30px rgba(255, 255, 255, 0.5),
+                    0 4px 12px rgba(0, 0, 0, 0.4);
+            }
+        }
+
+        .site-tagline {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.9);
+            letter-spacing: 2px;
+            font-weight: 300;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        .module {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .module-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .module-name {
+            font-weight: bold;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .coefficient {
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .input-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .input-field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        input[type="number"] {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        input[type="number"]:invalid {
+            border-color: #dc3545;
+        }
+
+        input[type="number"]:valid {
+            border-color: #28a745;
+        }
+
+        .module-moyenne {
+            text-align: right;
+            margin-top: 10px;
+            font-weight: bold;
+            color: #667eea;
+            font-size: 14px;
+        }
+
+        .calculate-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 20px 0;
+            transition: transform 0.2s;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .calculate-btn:active {
+            transform: translateY(0);
+        }
+
+        .result {
+            text-align: center;
+            padding: 25px;
+            border-radius: 10px;
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .result.passed {
+            background: #d4edda;
+            color: #155724;
+            border: 3px solid #28a745;
+        }
+
+        .result.failed {
+            background: #f8d7da;
+            color: #721c24;
+            border: 3px solid #dc3545;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .anglais-note {
+            grid-column: 1 / -1;
+        }
+
+        @media (max-width: 600px) {
+            .site-logo {
+                font-size: 36px;
+                letter-spacing: 6px;
+            }
+
+            .input-group {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- En-tête CLAXY -->
+    <header class="site-header">
+        <h1 class="site-logo">CLAXY</h1>
+        <p class="site-tagline">Système de Calcul de Moyennes</p>
+    </header>
+
+    <div class="container">
+        <h1>📚 Calculateur de Moyenne de Semestre</h1>
+
+        <form id="calculatorForm">
+            <!-- Module 1: Réseaux avancées -->
+            <div class="module">
+                <div class="module-header">
+                    <span class="module-name">Réseaux avancées</span>
+                    <span class="coefficient">Coef: 3</span>
+                </div>
+                <div class="input-group">
+                    <div class="input-field">
+                        <label for="reseaux_cc">Note CC</label>
+                        <input type="number" id="reseaux_cc" min="0" max="20" step="0.01" required>
+                        <span class="error-message">La note doit être entre 0 et 20</span>
+                    </div>
+                    <div class="input-field">
+                        <label for="reseaux_examen">Note Examen</label>
+                        <input type="number" id="reseaux_examen" min="0" max="20" step="0.01" required>
+                        <span class="error-message">La note doit être entre 0 et 20</span>
+                    </div>
+                </div>
+                <div class="module-moyenne" id="reseaux_moyenne"></div>
+            </div>
+
+            <!-- Module 2: Architecture et administration -->
+            <div class="module">
+                <div class="module-header">
+                    <span class="module-name">Architecture et administration</span>
+                    <span class="coefficient">Coef: 3</span>
+                </div>
+                <div class="input-group">
+                    <div class="input-field">
+                        <label for="architecture_cc">Note CC</label>
+                        <input type="number" id="architecture_cc" min="0" max="20" step="0.01" required>
+                        <span class="error-message">La note doit être entre 0 et 20</span>
+                    </div>
+                    <div class="input-field">
+                        <label for="architecture_examen">Note Examen</label>
+                        <input type="number" id="architecture_examen" min="0" max="20" step="0.01" required>
+                        <span class="error-message">La note doit être entre 0 et 20</span>
+                    </div>
+                </div>
+                <div class="module-moyenne" id="architecture_moyenne"></div>
+            </div>
+
+            <!-- Module 3: Programmation concurrente -->
+            <div class="module">
+                <div class="module-header">
+                    <span class="module-name">Programmation concurrente</span>
+                    <span class="coefficient">Coef: 3</span>
+                </div>
+                <div class="input-group">
+                    <div class="input-field">
+                        <label for="programmation_cc">Note CC</label>
+                        <input type="number" id="programmation_cc" min="0" max="20" step="0.01" required>
+                        <span class="error-message">La note doit être entre 0 et 20</span>
+                    </div>
+                    <div class="input-field">
+                        <label for="programmation_examen">Note Examen</label>
+                        <input type="number" id="programmation_examen" min="0" max="20" step="0.01" required>
+                        <span class="error-message">La note doit être entre 0 et 20</span>
+                    </div>
+                </div>
+                <div class="module-moyenne" id="programmation_moyenne"></div>
+            </div>
+
+            <!-- Module 4: Algorithme Avancée et complexité -->
+            <div class="module">
+                <div class="module-header">
+                    <span class="module-name">Algorithme Avancée et complexité</span>
+                    <span class="coefficient">Coef: 3</span>
+                </div>
+                <div class="input-group">
+                    <div class="input-field">
+                        <label for="algorithme_cc">Note CC</label>
+                        <input type="number" id="algorithme_cc" min="0" max="20" step="0.01" required>
+                        <span class="error-message">La note doit être entre 0 et 20</span>
+                    </div>
+                    <div class="input-field">
+                        <label for="algorithme_examen">Note Examen</label>
+                        <input type="number" id="algorithme_examen" min="0" max="20" step="0.01" required>
+                        <span class="error-message">La note doit être entre 0 et 20</span>
+                    </div>
+                </div>
+                <div class="module-moyenne" id="algorithme_moyenne"></div>
+            </div>
+
+            <!-- Module 5: Téléphonie IP -->
+            <div class="module">
+                <div class="module-header">
+                    <span class="module-name">Téléphonie IP</span>
+                    <span class="coefficient">Coef: 3</span>
+                </div>
+                <div class="input-group">
+                    <div class="input-field">
+                        <label for="telephonie_cc">Note CC</label>
+                        <input type="number" id="telephonie_cc" min="0" max="20" step="0.01" required>
+                        <span class="error-message">La note doit être entre 0 et 20</span>
+                    </div>
+                    <div class="input-field">
+                        <label for="telephonie_examen">Note Examen</label>
+                        <input type="number" id="telephonie_examen" min="0" max="20" step="0.01" required>
+                        <span class="error-message">La note doit être entre 0 et 20</span>
+                    </div>
+                </div>
+                <div class="module-moyenne" id="telephonie_moyenne"></div>
+            </div>
+
+            <!-- Module 6: Gestion de projet -->
+            <div class="module">
+                <div class="module-header">
+                    <span class="module-name">Gestion de projet</span>
+                    <span class="coefficient">Coef: 2</span>
+                </div>
+                <div class="input-group">
+                    <div class="input-field">
+                        <label for="gestion_cc">Note CC</label>
+                        <input type="number" id="gestion_cc" min="0" max="20" step="0.01" required>
+                        <span class="error-message">La note doit être entre 0 et 20</span>
+                    </div>
+                    <div class="input-field">
+                        <label for="gestion_examen">Note Examen</label>
+                        <input type="number" id="gestion_examen" min="0" max="20" step="0.01" required>
+                        <span class="error-message">La note doit être entre 0 et 20</span>
+                    </div>
+                </div>
+                <div class="module-moyenne" id="gestion_moyenne"></div>
+            </div>
+
+            <!-- Module 7: Anglais -->
+            <div class="module">
+                <div class="module-header">
+                    <span class="module-name">Anglais</span>
+                    <span class="coefficient">Coef: 1</span>
+                </div>
+                <div class="input-group">
+                    <div class="input-field anglais-note">
+                        <label for="anglais_examen">Note Examen (pas de CC)</label>
+                        <input type="number" id="anglais_examen" min="0" max="20" step="0.01" required>
+                        <span class="error-message">La note doit être entre 0 et 20</span>
+                    </div>
+                </div>
+                <div class="module-moyenne" id="anglais_moyenne"></div>
+            </div>
+
+            <button type="submit" class="calculate-btn">Calculer la Moyenne</button>
+        </form>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('calculatorForm');
+        const resultDiv = document.getElementById('result');
+
+        // Modules avec leurs coefficients
+        const modules = [
+            { name: 'reseaux', coef: 3, hasCC: true },
+            { name: 'architecture', coef: 3, hasCC: true },
+            { name: 'programmation', coef: 3, hasCC: true },
+            { name: 'algorithme', coef: 3, hasCC: true },
+            { name: 'telephonie', coef: 3, hasCC: true },
+            { name: 'gestion', coef: 2, hasCC: true },
+            { name: 'anglais', coef: 1, hasCC: false }
+        ];
+
+        // Validation en temps réel
+        document.querySelectorAll('input[type="number"]').forEach(input => {
+            input.addEventListener('input', function() {
+                const value = parseFloat(this.value);
+                const errorMsg = this.nextElementSibling;
+                
+                if (this.value !== '' && (value < 0 || value > 20)) {
+                    errorMsg.style.display = 'block';
+                    this.style.borderColor = '#dc3545';
+                } else {
+                    errorMsg.style.display = 'none';
+                    this.style.borderColor = this.value ? '#28a745' : '#ddd';
+                }
+            });
+        });
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validation finale
+            let isValid = true;
+            document.querySelectorAll('input[type="number"]').forEach(input => {
+                const value = parseFloat(input.value);
+                if (value < 0 || value > 20) {
+                    isValid = false;
+                    input.nextElementSibling.style.display = 'block';
+                    input.style.borderColor = '#dc3545';
+                }
+            });
+
+            if (!isValid) {
+                alert('⚠️ Erreur: Toutes les notes doivent être entre 0 et 20');
+                return;
+            }
+
+            // Calcul des moyennes
+            let sommePonderee = 0;
+            let sommeCoefficients = 0;
+
+            modules.forEach(module => {
+                let moyenne;
+                
+                if (module.hasCC) {
+                    const cc = parseFloat(document.getElementById(`${module.name}_cc`).value);
+                    const examen = parseFloat(document.getElementById(`${module.name}_examen`).value);
+                    moyenne = cc * 0.4 + examen * 0.6;
+                } else {
+                    // Pour l'anglais (pas de CC)
+                    moyenne = parseFloat(document.getElementById(`${module.name}_examen`).value);
+                }
+
+                // Afficher la moyenne du module
+                document.getElementById(`${module.name}_moyenne`).textContent = 
+                    `Moyenne: ${moyenne.toFixed(2)}/20`;
+
+                // Ajouter à la somme pondérée
+                sommePonderee += moyenne * module.coef;
+                sommeCoefficients += module.coef;
+            });
+
+            // Calcul de la moyenne générale
+            const moyenneGenerale = sommePonderee / sommeCoefficients;
+
+            // Affichage du résultat
+            resultDiv.classList.add('show');
+            if (moyenneGenerale >= 10) {
+                resultDiv.className = 'result show passed';
+                resultDiv.innerHTML = `
+                    ✅ Moyenne Générale: ${moyenneGenerale.toFixed(2)}/20<br>
+                    <span style="font-size: 18px; margin-top: 10px; display: block;">Félicitations! Vous avez validé le semestre</span>
+                `;
+            } else {
+                resultDiv.className = 'result show failed';
+                resultDiv.innerHTML = `
+                    ❌ Moyenne Générale: ${moyenneGenerale.toFixed(2)}/20<br>
+                    <span style="font-size: 18px; margin-top: 10px; display: block;">Vous n'avez pas validé le semestre</span>
+                `;
+            }
+
+            // Scroll vers le résultat
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+    </script>
+</body>
+</html>
